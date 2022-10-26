@@ -5,7 +5,6 @@ from django.contrib.contenttypes.models import ContentType
 from rest_framework.viewsets import ModelViewSet
 
 from org_model_logs.models import UserAction
-from org_model_logs.serializers import UserActionSerializer
 
 logger = logging.getLogger(__name__)
 

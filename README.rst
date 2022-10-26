@@ -27,7 +27,7 @@ Quick start
 
     from org_model_logs.api import (
         UserActionList,
-    )   
+    )
 
     from yourproject.permissions import IsInternal, etc..
 
