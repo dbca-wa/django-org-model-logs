@@ -30,7 +30,8 @@ class BaseUserActionViewSet(ModelViewSet):
         user_action = self.log_user_action(
             instance["id"], settings.ACTION_CREATE, why=why
         )
-        response.data["user_action"] = UserActionSerializer(user_action).data
+        serializer = self.get_serializer_class()
+        response.data["user_action"] = serializer(user_action).data
         return response
 
     def retrieve(self, request, *args, **kwargs):
@@ -46,7 +47,8 @@ class BaseUserActionViewSet(ModelViewSet):
         user_action = self.log_user_action(
             instance["id"], settings.ACTION_UPDATE, why=why
         )
-        response.data["user_action"] = UserActionSerializer(user_action).data
+        serializer = self.get_serializer_class()
+        response.data["user_action"] = serializer(user_action).data
         return response
 
     def partial_update(self, request, *args, **kwargs):
@@ -56,7 +58,8 @@ class BaseUserActionViewSet(ModelViewSet):
         user_action = self.log_user_action(
             instance["id"], settings.ACTION_PARTIAL_UPDATE, why=why
         )
-        response.data["user_action"] = UserActionSerializer(user_action).data
+        serializer = self.get_serializer_class()
+        response.data["user_action"] = serializer(user_action).data
         return response
 
     def destroy(self, request, *args, **kwargs):
@@ -66,5 +69,6 @@ class BaseUserActionViewSet(ModelViewSet):
         user_action = self.log_user_action(
             instance["id"], settings.ACTION_DESTROY, why=why
         )
-        response.data["user_action"] = UserActionSerializer(user_action).data
+        serializer = self.get_serializer_class()
+        response.data["user_action"] = serializer(user_action).data
         return response
