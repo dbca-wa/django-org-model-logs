@@ -13,6 +13,7 @@ from org_model_logs.serializers import (
     EntryTypeSerializer,
     UserActionSerializer,
 )
+from org_model_logs.utils import BaseUserActionViewSet
 
 logger = logging.getLogger(__name__)
 
@@ -39,19 +40,15 @@ class UserActionList(generics.ListAPIView):
             if ContentType.objects.filter(app_label=app_label, model=model).exists():
                 content_type = ContentType.objects.get(app_label=app_label, model=model)
                 logger.debug("content_type = " + str(content_type))
-                if UserAction.objects.filter(
+                return UserAction.objects.filter(
                     content_type=content_type, object_id=object_id
-                ).exists():
-                    return UserAction.objects.filter(
-                        content_type=content_type, object_id=object_id
-                    )
-                UserAction.objects.none()
+                )
         if app_label and model:
             if ContentType.objects.filter(app_label=app_label, model=model).exists():
                 content_type = ContentType.objects.get(app_label=app_label, model=model)
                 return UserAction.objects.filter(content_type=content_type)
         if app_label:
-            if ContentType.objects.filter(app_label=app_label, model=model).exists():
+            if ContentType.objects.filter(app_label=app_label).exists():
                 content_types = ContentType.objects.filter(app_label=app_label)
                 return UserAction.objects.filter(content_type__in=content_types)
         return UserAction.objects.all()
@@ -60,7 +57,7 @@ class UserActionList(generics.ListAPIView):
         return super().list(request, *args, **kwargs)
 
 
-class UserActionViewSet(viewsets.ModelViewSet):
+class UserActionViewSet(BaseUserActionViewSet):
     model = UserAction
     serializer_class = UserActionSerializer
 
@@ -82,20 +79,15 @@ class CreateCommunicationsLogEntry(generics.ListCreateAPIView):
         if app_label and model and object_id:
             if ContentType.objects.filter(app_label=app_label, model=model).exists():
                 content_type = ContentType.objects.get(app_label=app_label, model=model)
-                logger.debug("content_type = " + str(content_type))
-                if CommunicationsLogEntry.objects.filter(
+                return CommunicationsLogEntry.objects.filter(
                     content_type=content_type, object_id=object_id
-                ).exists():
-                    return CommunicationsLogEntry.objects.filter(
-                        content_type=content_type, object_id=object_id
-                    )
-                CommunicationsLogEntry.objects.none()
+                )
         if app_label and model:
             if ContentType.objects.filter(app_label=app_label, model=model).exists():
                 content_type = ContentType.objects.get(app_label=app_label, model=model)
                 return CommunicationsLogEntry.objects.filter(content_type=content_type)
         if app_label:
-            if ContentType.objects.filter(app_label=app_label, model=model).exists():
+            if ContentType.objects.filter(app_label=app_label).exists():
                 content_types = ContentType.objects.filter(app_label=app_label)
                 return CommunicationsLogEntry.objects.filter(
                     content_type__in=content_types

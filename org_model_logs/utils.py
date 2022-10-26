@@ -10,7 +10,7 @@ from org_model_logs.serializers import UserActionSerializer
 logger = logging.getLogger(__name__)
 
 
-class UserActionViewSet(ModelViewSet):
+class BaseUserActionViewSet(ModelViewSet):
     def log_user_action(self, object_id, action, why=None):
         model = self.model
         content_type = ContentType.objects.get_for_model(model)
