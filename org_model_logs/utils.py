@@ -1,4 +1,5 @@
 import logging
+from abc import ABC, abstractmethod
 
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
@@ -9,7 +10,7 @@ from org_model_logs.models import UserAction
 logger = logging.getLogger(__name__)
 
 
-class BaseUserActionViewSet(ModelViewSet):
+class BaseUserActionViewSet(ModelViewSet, ABC):
     def log_user_action(self, object_id, action, why=None):
         model = self.model
         content_type = ContentType.objects.get_for_model(model)
@@ -22,6 +23,12 @@ class BaseUserActionViewSet(ModelViewSet):
         )
         return user_action
 
+    @abstractmethod
+    def get_user_action_serializer_class(self):
+        raise NotImplementedError(
+            "Subclasses must implement a get_user_action_serializer method."
+        )
+
     def create(self, request, *args, **kwargs):
         why = self.request.data.get("why", None)
         response = super().create(request, *args, **kwargs)
@@ -29,7 +36,7 @@ class BaseUserActionViewSet(ModelViewSet):
         user_action = self.log_user_action(
             instance["id"], settings.ACTION_CREATE, why=why
         )
-        serializer = self.get_serializer_class()
+        serializer = self.get_user_action_serializer_class()
         response.data["user_action"] = serializer(user_action).data
         return response
 
@@ -46,7 +53,7 @@ class BaseUserActionViewSet(ModelViewSet):
         user_action = self.log_user_action(
             instance["id"], settings.ACTION_UPDATE, why=why
         )
-        serializer = self.get_serializer_class()
+        serializer = self.get_user_action_serializer_class()
         response.data["user_action"] = serializer(user_action).data
         return response
 
@@ -57,7 +64,7 @@ class BaseUserActionViewSet(ModelViewSet):
         user_action = self.log_user_action(
             instance["id"], settings.ACTION_PARTIAL_UPDATE, why=why
         )
-        serializer = self.get_serializer_class()
+        serializer = self.get_user_action_serializer_class()
         response.data["user_action"] = serializer(user_action).data
         return response
 
@@ -68,6 +75,6 @@ class BaseUserActionViewSet(ModelViewSet):
         user_action = self.log_user_action(
             instance["id"], settings.ACTION_DESTROY, why=why
         )
-        serializer = self.get_serializer_class()
+        serializer = self.get_user_action_serializer_class()
         response.data["user_action"] = serializer(user_action).data
         return response
