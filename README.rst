@@ -37,7 +37,17 @@ Quick start
 
 3. Run ``python manage.py migrate`` to create the org model logs models.
 
-4. To add basic logging to a viewset simply extend from org_model_logs.utils.UserActionViewSet
+4. To add basic logging to a viewset simply extend from org_model_logs.utils.BaseUserActionViewSet
+
+    define a get_user_action_serializer_class
+
+    from org_model_logs.utils import BaseUserActionViewSet
+
+    from your_project.components.main.serializers import YourUserActionSerializer
+
+    class YourModelViewset(BaseUserActionViewSet)
+        def get_user_action_serializer_class(self):
+            return YourUserActionSerializer
 
     For custom api methods you must call the log_action method manually. I.e.
 
